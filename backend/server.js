@@ -4,8 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes.js';
 import connectToMongoDB from './db/connectToMongoDB.js';
 
-// Load environment variables from .env file
-dotenv.config();
+
 
 // Create an instance of express app
 const app = express();
@@ -17,9 +16,12 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 // Define a simple route for testing
-app.get('/', (req, res) => {
+/* app.get('/', (req, res) => {
   res.send('Hello chatting app!!');
-});
+}); */
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Use auth routes
 app.use("/api/auth", authRoutes);
