@@ -1,9 +1,10 @@
 // Import required modules
 import express from 'express';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import connectToMongoDB from './db/connectToMongoDB.js';
-
+import messageRoutes from './routes/message.routes.js'
 
 
 // Create an instance of express app
@@ -14,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware to parse JSON
 app.use(express.json());
-
+app.use(cookieParser());
 // Define a simple route for testing
 /* app.get('/', (req, res) => {
   res.send('Hello chatting app!!');
@@ -25,7 +26,7 @@ dotenv.config();
 
 // Use auth routes
 app.use("/api/auth", authRoutes);
-
+app.use("/api/messages", messageRoutes);
 
 // Start the server and connect to MongoDB
 app.listen(PORT, () => {
