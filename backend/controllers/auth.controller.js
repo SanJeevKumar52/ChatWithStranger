@@ -53,10 +53,52 @@ export const signup = async (req, res) => {
     }
 };
 
-export const login = (req, res) => {
-    res.send('login form');
+
+export const login = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Validate input
+        if (!username || !password) {
+            return res.status(400).json({ error: "Username and password are required" });
+        }
+
+        // Find the user by username
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(400).json({ error: "Invalid username or password" });
+        }
+
+        // Check if the password matches
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ error: "Invalid username or password" });
+        }
+
+        // Generate JWT token and set in cookie
+        generateTokenAndSetCookie(user._id, res);
+
+        // Respond with user details
+        res.status(200).json({
+            _id: user._id,
+            fullName: user.fullName,
+            username: user.username,
+            profilePic: user.profilePic,
+        });
+    } catch (error) {
+        console.error("Error in login controller:", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 };
 
 export const logout = (req, res) => {
-    res.send('logout form');
+    // Clear the cookie by setting its expiration date to a past date
+    res.cookie('token', '', { expires: new Date(0), httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+
+    // Alternatively, you can use res.clearCookie('token') if using a different cookie setup
+    // res.clearCookie('token');
+
+    res.status(200).json({ message: 'Successfully logged out' });
 };
