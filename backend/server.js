@@ -26,6 +26,7 @@ dotenv.config();
 // Use auth routes
 app.use("/api/auth", authRoutes);
 
+
 // Start the server and connect to MongoDB
 app.listen(PORT, () => {
   console.log(`App is running on port ${PORT}`);
